@@ -2,6 +2,21 @@ const autojsUtils = require('./lib/autojs-utils');
 
 // autojsUtils.test();
 
+// 換算民國年
+Date.prototype.toKMTString = function() {
+    const kmt = this.getFullYear()-1911;
+    // Date.prototype.getMonth => [0,11] ,0 = 1月...以此類推
+    this.getMonth = function(){ return this.getMonth()+1 };
+    return this.toLocaleString('sv').replace(/\d{4}/,kmt);
+}
+
+
+// 取得年月日
+const D = (new Date()).toKMTString()
+                      .match(/(\d{1,3})\-(\d{1,2})\-(\d{1,2})/)
+                      .slice(1)
+                      .join('');
+
 launchApp('LINE');
 sleep(1000);
 
@@ -57,7 +72,7 @@ if (targertNotepad) {
     let result = comments.join('\n');
 
     let path = files.join(files.getSdcardPath(), "Download");
-    let defaultFileName = `${topic}.txt`;
+    let defaultFileName = `${topic}-${D}.txt`;
 
     let fullPath = files.join(path, defaultFileName);
     files.ensureDir(fullPath); // 確保資料夾存在
